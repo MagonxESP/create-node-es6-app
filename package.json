@@ -1,0 +1,26 @@
+{
+  "name": "create-node-es6-app",
+  "version": "1.0.0",
+  "description": "Create node project with ES6 support using gulp",
+  "main": "createProject.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "gulp"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.10.3",
+    "@babel/preset-env": "^7.10.3",
+    "babel-cli": "^6.26.0",
+    "gulp": "^4.0.2",
+    "gulp-babel": "^8.0.0",
+    "gulp-plumber": "^1.2.1",
+    "gulp-sourcemaps": "^2.6.5"
+  },
+  "dependencies": {
+    "commander": "^5.1.0",
+    "ncp": "^2.0.0"
+  }
+}

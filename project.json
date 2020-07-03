@@ -1,0 +1,13 @@
+{
+  "ignore_copy": [
+    ".git",
+    "createProject.js",
+    "package.json",
+    "package-lock.json",
+    "project.json",
+    "node_modules",
+    "dist"
+  ],
+  "dependencies": { },
+  "main": "dist/index.js"
+}
