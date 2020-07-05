@@ -51,7 +51,7 @@ function createPackageJson(projectName) {
     projectPackageJson.name = projectName;
     projectPackageJson.version = '0.0.1';
     projectPackageJson.dependencies = projectSettings.dependencies;
-    projectPackageJson.main = projectSettings.main;
+    delete projectPackageJson.bin; // delete bin prop
 
     fs.writeFileSync(path.join(projectName, 'package.json'), JSON.stringify(projectPackageJson, null, 2));
 }
