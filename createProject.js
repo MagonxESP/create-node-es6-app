@@ -69,6 +69,7 @@ function createPackageJson(projectName) {
     projectPackageJson.version = '0.0.1';
     projectPackageJson.dependencies = projectSettings.dependencies;
     delete projectPackageJson.bin; // delete bin prop
+    delete projectPackageJson.repository; // delete repository
 
     projectPackageJson = normalizePackageJson(projectPackageJson);
 
