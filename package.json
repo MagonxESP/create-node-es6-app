@@ -1,6 +1,6 @@
 {
   "name": "@magonxesp/create-node-es6-app",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Create node project with ES6 support using gulp",
   "main": "./dist/index.js",
   "scripts": {
