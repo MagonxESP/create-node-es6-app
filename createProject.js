@@ -3,10 +3,9 @@
 const fs = require('fs');
 const commander = require('commander');
 const packageJson = require('./package.json');
-const projectSettings = require('./project.json');
 const path = require('path');
 const ncp = require('ncp');
-const { spawn } = require('child_process');
+const spawn = require('cross-spawn');
 const validateNpmPackageName = require('validate-npm-package-name');
 
 const program = new commander.Command(packageJson.name);
@@ -14,30 +13,32 @@ const program = new commander.Command(packageJson.name);
 const steps = [
     {
         step: 'Make project skeleton',
-        run: async (name) => {
-            fs.mkdirSync(name);
-            await createSkeleton(name);
-            createPackageJson(name);
+        run: async (rootPath, name) => {
+            fs.mkdirSync(rootPath, { recursive: true });
+            await createSkeleton(rootPath, name);
+            createPackageJson(rootPath, name);
         },
     },
     {
         step: 'Install dependencies',
-        run: async (name) => {
-            await install(name);
+        run: async (rootPath, name) => {
+            await runCmd(rootPath,'npm', ['install']);
         }
     }
 ];
 
-function createSkeleton(projectName) {
+function createSkeleton(root, projectName) {
     return new Promise((resolve, reject) => {
+        const skeletonFiles = ['src', 'gulpfile.js', '.gitignore'];
+
         fs.readdir(__dirname, (error, files) => {
             if (error) {
                 reject(error);
             }
 
             for (let file of files) {
-                if (!projectSettings.ignore_copy.includes(file) && file !== projectName) {
-                    ncp(path.join(__dirname, file), path.join('./', projectName, file));
+                if (skeletonFiles.includes(file)) {
+                    ncp(path.join(__dirname, file), path.join(root, file));
                 }
             }
 
@@ -46,46 +47,44 @@ function createSkeleton(projectName) {
     });
 }
 
-/**
- * Remove "_(.*)" properties
- *
- * @param {object} _packageJson
- * @return {object} the packageJson object without "_(.*)" named properties
- */
-function normalizePackageJson(_packageJson) {
-    Object.entries(_packageJson).forEach(([key, value]) => {
-        if (new RegExp('_(.*)').test(key)) {
-            delete _packageJson[key];
+function createPackageJson(root, projectName) {
+    let projectPackageJson = {
+        name: projectName,
+        description: "",
+        author: "",
+        license: "MIT",
+        version: "0.0.1",
+        main: "./dist/index.js",
+        scripts: {
+            test: "echo \"Error: no test specified\" && exit 1",
+            build: "gulp",
+            start: "node ./dist/index.js"
+        },
+        dependencies: {},
+        devDependencies: {
+            "@babel/core": "^7.10.4",
+            "@babel/preset-env": "^7.10.4",
+            "babel-cli": "^6.26.0",
+            "gulp": "^4.0.2",
+            "gulp-babel": "^8.0.0",
+            "gulp-plumber": "^1.2.1",
+            "gulp-sourcemaps": "^2.6.5"
         }
-    });
+    };
 
-    return _packageJson;
+    fs.writeFileSync(path.join(root, 'package.json'), JSON.stringify(projectPackageJson, null, 2));
 }
 
-function createPackageJson(projectName) {
-    let projectPackageJson = packageJson;
-
-    projectPackageJson.name = projectName;
-    projectPackageJson.version = '0.0.1';
-    projectPackageJson.dependencies = projectSettings.dependencies;
-    delete projectPackageJson.bin; // delete bin prop
-    delete projectPackageJson.repository; // delete repository
-
-    projectPackageJson = normalizePackageJson(projectPackageJson);
-
-    fs.writeFileSync(path.join(projectName, 'package.json'), JSON.stringify(projectPackageJson, null, 2));
-}
-
-function install(projectName) {
+function runCmd(root, command, args) {
     return new Promise((resolve, reject) => {
-        let child = spawn('npm', ['install'], { cwd: path.join('.', projectName) });
+        let child = spawn.sync(command, args, { cwd: root, stdio: 'inherit' });
 
         child.on('error', (error) => {
             reject(error);
         });
 
         child.on('close', (code) => {
-           resolve(code);
+            resolve(code);
         });
     });
 }
@@ -106,12 +105,15 @@ function validateName(name) {
 }
 
 async function creaateProject(name) {
-    if (!validateName(name)) {
+    const root = path.resolve(name);
+    const appName = path.basename(root);
+
+    if (!validateName(appName)) {
         return;
     }
 
     if (fs.existsSync(name)) {
-        console.log('project ' + name + ' already exists!');
+        console.log('project at path ' + name + ' already exists!');
         return;
     }
 
@@ -120,7 +122,7 @@ async function creaateProject(name) {
 
         for (let step of steps) {
             console.log(`Step (${step_num}/${steps.length}): ${step.step}`);
-            await step.run(name);
+            await step.run(root, appName);
             console.log('done!');
             step_num++;
         }

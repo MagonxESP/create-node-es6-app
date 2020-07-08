@@ -11,3 +11,13 @@ $ npx @magonxesp/create-node-es6-app my-app-name
     Error: spawn npm ENOENT
     ```
   Run ```npm install``` on the root of your new project directory.
+  
+## Npm scripts
+* Build project
+    ```shell script
+    $ npm run build
+    ```
+* Run
+    ```shell script
+    $ npm run start
+    ```

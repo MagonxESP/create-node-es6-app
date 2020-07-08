@@ -1,19 +1,23 @@
 {
   "name": "@magonxesp/create-node-es6-app",
-  "version": "1.0.6",
+  "version": "1.1.0",
   "description": "Create node project with ES6 support using gulp",
   "main": "./dist/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "gulp"
+    "build": "gulp",
+    "start": "node ./dist/index.js"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/MagonxESP/create-node-es6-app"
   },
+  "engines": {
+    "node": ">=12"
+  },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "magonxesp",
+  "license": "MIT",
   "devDependencies": {
     "@babel/core": "^7.10.4",
     "@babel/preset-env": "^7.10.4",
@@ -25,6 +29,7 @@
   },
   "dependencies": {
     "commander": "^5.1.0",
+    "cross-spawn": "^7.0.3",
     "ncp": "^2.0.0",
     "validate-npm-package-name": "^3.0.0"
   },
