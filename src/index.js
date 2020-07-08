@@ -1,3 +1,1 @@
-import hola from './hola';
-
-hola();
+// main source file
