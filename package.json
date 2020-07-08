@@ -21,7 +21,8 @@
   },
   "dependencies": {
     "commander": "^5.1.0",
-    "ncp": "^2.0.0"
+    "ncp": "^2.0.0",
+    "validate-npm-package-name": "^3.0.0"
   },
   "bin": "./createProject.js"
 }
