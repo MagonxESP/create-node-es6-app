@@ -29,7 +29,7 @@ const steps = [
 
 function createSkeleton(root, projectName) {
     return new Promise((resolve, reject) => {
-        const skeletonFiles = ['src', 'gulpfile.js', '.gitignore'];
+        const skeletonFiles = ['src', 'gulpfile.js', '.gitignore', '.babelrc'];
 
         fs.readdir(__dirname, (error, files) => {
             if (error) {
@@ -56,14 +56,22 @@ function createPackageJson(root, projectName) {
         version: "0.0.1",
         main: "./dist/index.js",
         scripts: {
-            test: "echo \"Error: no test specified\" && exit 1",
-            build: "gulp",
-            start: "node ./dist/index.js"
+            "test": "echo \"Error: no test specified\" && exit 1",
+            "build": "gulp",
+            "build:watch": "gulp watch",
+            "start": "node ./dist/index.js",
+            "debug": "node --inspect ./dist/index.js",
+            "build:debug": "npm run build && npm run debug"
         },
         dependencies: {},
         devDependencies: {
             "@babel/core": "^7.10.4",
+            "@babel/plugin-proposal-class-properties": "^7.10.4",
+            "@babel/plugin-proposal-private-methods": "^7.10.4",
+            "@babel/plugin-syntax-class-properties": "^7.10.4",
+            "@babel/plugin-transform-runtime": "^7.10.4",
             "@babel/preset-env": "^7.10.4",
+            "@babel/register": "^7.10.4",
             "babel-cli": "^6.26.0",
             "gulp": "^4.0.2",
             "gulp-babel": "^8.0.0",
